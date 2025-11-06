@@ -1,0 +1,19 @@
+tag:
+  - polyglot_harness
+task: mmlu_poly_pt
+dataset_path: Polygl0t/MMLU-poly
+dataset_name: pt
+test_split: test
+fewshot_split: dev
+fewshot_config:
+  sampler: default
+output_type: multiple_choice
+doc_to_text: "{{question.strip()}}\nA. {{option_a}}\nB. {{option_b}}\nC. {{option_c}}\nD. {{option_d}}\nAnswer:"
+doc_to_choice: ["A", "B", "C", "D"]
+doc_to_target: answer
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

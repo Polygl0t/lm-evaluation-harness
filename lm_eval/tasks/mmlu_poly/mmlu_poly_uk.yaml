@@ -1,0 +1,3 @@
+include: mmlu_poly_pt.yaml
+task: mmlu_poly_uk
+dataset_name: uk
