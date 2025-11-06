@@ -32,11 +32,11 @@ Homepage: https://allenai.org/data/arc
 
 #### Groups
 
-- `arc_poly`: Evaluates all `arc_poly_{lang}` tasks
+- None
 
 #### Tasks
 
-- `arc_poly_{lang}`: These are ARC Challenge tasks in different languages introduced in the Polyglot evaluation harness.
+- `arc_challenge_poly_{lang}`: These are ARC Challenge tasks in different languages introduced in the Polyglot evaluation harness.
 
 <details>
 <summary><b>All languages supported</b></summary>
