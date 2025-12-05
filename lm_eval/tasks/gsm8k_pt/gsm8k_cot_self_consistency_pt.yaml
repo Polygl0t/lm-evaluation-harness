@@ -1,7 +1,6 @@
 include: gsm8k_cot_pt.yaml
 tag:
   - chain_of_thought_pt
-  - gsm8k_cot_self_consistency_pt
   - polyglot_harness
 task: gsm8k_cot_self_consistency_pt
 generation_kwargs:
