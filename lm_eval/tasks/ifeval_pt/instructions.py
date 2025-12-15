@@ -1029,7 +1029,7 @@ class ParagraphFirstWordCheck(Instruction):
 
         # check that index doesn't go out of bounds
         if self._nth_paragraph <= num_paragraphs:
-            paragraph = paragraphs[self._nth_paragraph - 1].strip()
+            paragraph = paragraphs[int(self._nth_paragraph) - 1].strip() # cast to int in case of float (5.0 -> 5)
             if not paragraph:
                 return False
         else:
