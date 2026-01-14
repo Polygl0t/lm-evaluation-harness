@@ -1,5 +1,3 @@
-tag:
-  - lambadinha
 task: lambadinha
 dataset_path: nicholasKluge/lambadinha
 dataset_name: default
