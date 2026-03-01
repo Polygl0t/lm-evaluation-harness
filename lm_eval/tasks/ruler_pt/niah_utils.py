@@ -7,7 +7,7 @@ import datasets
 from lm_eval.tasks.ruler_pt.common_utils import DEFAULT_SEQ_LENGTHS, get_tokenizer
 from lm_eval.tasks.ruler_pt.prepare_niah import generate_samples, get_haystack
 
-TEMPLATE = """Algum tipo de mágica especial {type_needle_v} está escondida dentro do seguinte texto. Certifique-se de memorizá-la. Vou questioná-lo sobre as {type_needle_v} depois.\n{context}\nQuais são todas as {type_needle_v} especiais para {query} mencionadas no texto fornecido?"""
+TEMPLATE = "Alguns {type_needle_v} especiais estão escondidos no texto abaixo. Memorize-os. Vou questioná-lo sobre eles depois.\n{context}\nQuais são todos os {type_needle_v} especiais para {query} mencionados no texto fornecido?"
 eval_logger = logging.getLogger(__name__)
 
 

@@ -203,7 +203,7 @@ def sys_vartrack_w_noise_random(
             )
 
         gen_prefix_index = input_text.rfind(
-            " Answer: According to the chain(s) of variable assignment"
+            " Resposta: De acordo com a(s) cadeia(s) de atribuição de variáveis"
         )
         gen_prefix = input_text[gen_prefix_index:].strip()
         # This condition is to check if we are generating the few-shot.
