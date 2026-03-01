@@ -42,7 +42,14 @@ REMOVE_NEWLINE_TAB = ""
 STOP_WORDS = ""
 RANDOM_SEED = 42
 # Define Needle/Haystack Format
-NEDDLE = "Um dos especiais mágicos {type_needle_v} para {key} é: {value}."
+NEDDLE = "Um {type_needle_v} especial para {key} é: {value}."
+
+# Portuguese translations for needle types (singular, plural, grammatical gender)
+TYPE_NEEDLE_PT = {
+    "numbers": {"singular": "número",      "plural": "números",      "gender": "m"},
+    "words":   {"singular": "palavra",      "plural": "palavras",     "gender": "f"},
+    "uuids":   {"singular": "código UUID",  "plural": "códigos UUID", "gender": "m"},
+}
 
 nouns = SUBSTANTIVOS
 adjs = ADJETIVOS
@@ -120,7 +127,12 @@ def generate_input_output(
     num_needle_q: int = 1,
     random_seed: int = RANDOM_SEED,
 ) -> tuple[str, list[str], str]:
-    NEEDLE = "Um dos especiais mágicos {type_needle_v} para {key} é: {value}."
+    pt_info        = TYPE_NEEDLE_PT.get(type_needle_v, {"singular": type_needle_v, "plural": type_needle_v, "gender": "m"})
+    pt_singular    = pt_info["singular"]
+    pt_plural      = pt_info["plural"]
+    pt_gender      = pt_info["gender"]
+    needle_article = "Uma" if pt_gender == "f" else "Um"
+    NEEDLE = f"{needle_article} {{type_needle_v}} especial para {{key}} é: {{value}}."
     keys, values, needles = [], [], []
     for _ in range(num_needle_k):
         keys.append(generate_random(type_needle_k))
@@ -129,7 +141,7 @@ def generate_input_output(
             value.append(generate_random(type_needle_v))
             needles.append(
                 NEEDLE.format(
-                    type_needle_v=type_needle_v,
+                    type_needle_v=pt_singular,
                     key=keys[-1],
                     value=value[-1],
                 )
@@ -168,7 +180,8 @@ def generate_input_output(
         elif type_haystack == "needle":
             sentences = [
                 haystack.format(
-                    type_needle_v=type_needle_v,
+                    article=needle_article,
+                    type_needle_v=pt_singular,
                     key=generate_random(type_needle_k),
                     value=generate_random(type_needle_v),
                 )
@@ -185,7 +198,7 @@ def generate_input_output(
     queries = [keys[i] for i in indices]
     answers = [a for i in indices for a in values[i]]
     query = (
-        ", ".join(queries[:-1]) + ", and " + queries[-1]
+        ", ".join(queries[:-1]) + " e " + queries[-1]
         if len(queries) > 1
         else queries[0]
     )
@@ -193,15 +206,38 @@ def generate_input_output(
     template = template
     type_needle_v = type_needle_v
     if num_needle_q * num_needle_v == 1:
-        template = template.replace("Alguns", "Um")
-        template = template.replace("Algumas", "Uma")
-        template = template.replace("são todos", "é")
-        template = template.replace("são", "é")
-        template = template.replace("respostas", "resposta")
-        type_needle_v = type_needle_v[:-1]  # remove "s"
+        # Singular form – gender-aware replacements
+        art_indef_s = "Uma" if pt_gender == "f" else "Um"
+        pro_obj_s   = "a"   if pt_gender == "f" else "o"
+        pro_s       = "ela" if pt_gender == "f" else "ele"
+        hidden_s    = "está escondida"  if pt_gender == "f" else "está escondido"
+        mentioned_s = "mencionada"      if pt_gender == "f" else "mencionado"
+        art_def_s   = "a"              if pt_gender == "f" else "o"
+        template = template.replace(
+            "Alguns {type_needle_v} especiais estão escondidos",
+            f"{art_indef_s} {{type_needle_v}} especial {hidden_s}",
+        )
+        template = template.replace("Memorize-os", f"Memorize-{pro_obj_s}")
+        template = template.replace("sobre eles", f"sobre {pro_s}")
+        template = template.replace(
+            "Quais são todos os {type_needle_v} especiais",
+            f"Qual é {art_def_s} {{type_needle_v}} especial",
+        )
+        template = template.replace("mencionados", mentioned_s)
+        type_needle_v_pt = pt_singular
+    else:
+        # Plural form – gender agreement for feminine types
+        if pt_gender == "f":
+            template = template.replace("Alguns {type_needle_v}", "Algumas {type_needle_v}")
+            template = template.replace("estão escondidos", "estão escondidas")
+            template = template.replace("Memorize-os", "Memorize-as")
+            template = template.replace("sobre eles", "sobre elas")
+            template = template.replace("todos os {type_needle_v}", "todas as {type_needle_v}")
+            template = template.replace("mencionados", "mencionadas")
+        type_needle_v_pt = pt_plural
 
     input_text = template.format(
-        type_needle_v=type_needle_v,
+        type_needle_v=type_needle_v_pt,
         context=context,
         query=query,
     )
@@ -229,6 +265,7 @@ def generate_samples(
 ) -> list[dict]:
     assert TOKENIZER is not None, "TOKENIZER is not defined."
     num_needle_k = max(num_needle_k, num_needle_q)
+    pt_info = TYPE_NEEDLE_PT.get(type_needle_v, {"singular": type_needle_v, "plural": type_needle_v, "gender": "m"})
     write_jsons = []
     tokens_to_generate = tokens_to_generate
 
@@ -311,9 +348,13 @@ def generate_samples(
             "outputs": answer,
             "length": length,
             "max_length": max_seq_length,
-            "gen_prefix": f"O especial mágico {type_needle_v[:-1] if num_needle_q * num_needle_v == 1 else type_needle_v} para {query} mencionado no texto fornecido é"
-            if num_needle_q * num_needle_v == 1
-            else f"Os especiais mágicos {type_needle_v} para {query} mencionados no texto fornecido são",
+            "gen_prefix": (
+                f"{'A' if pt_info['gender'] == 'f' else 'O'} {pt_info['singular']} especial para {query} "
+                f"{'mencionada' if pt_info['gender'] == 'f' else 'mencionado'} no texto fornecido é"
+                if num_needle_q * num_needle_v == 1 else
+                f"{'As' if pt_info['gender'] == 'f' else 'Os'} {pt_info['plural']} especiais para {query} "
+                f"{'mencionadas' if pt_info['gender'] == 'f' else 'mencionados'} no texto fornecido são"
+            ),
         }
         if formatted_output["outputs"][0] not in formatted_output["input"]:
             assert False, (
@@ -327,9 +368,11 @@ def get_haystack(
     type_haystack: Literal["essay", "repeat", "needle"],
 ) -> Union[list[str], str]:
     
-    NEEDLE = "Um dos especiais mágicos {type_needle_v} para {key} é: {value}."
+    NEEDLE = "{article} {type_needle_v} especial para {key} é: {value}."
     if type_haystack == "essay":
-        HAYSTACK_URL = "https://raw.githubusercontent.com/mungg/OneRuler/refs/heads/main/OneRuler/data/books/pt/the_book_of_disquietude_pt.txt"
+        #HAYSTACK_URL = "https://raw.githubusercontent.com/mungg/OneRuler/refs/heads/main/OneRuler/data/books/pt/the_book_of_disquietude_pt.txt"
+        HAYSTACK_URL = "https://raw.githubusercontent.com/Nkluge-correa/long-pt-docs/refs/heads/main/docs/000021.txt"
+
         response = requests.get(HAYSTACK_URL)
         response.raise_for_status()
         essay = response.text

@@ -31,7 +31,6 @@ async def get_essays() -> Dict[str, str]:
     # Using the book from the `https://github.com/mungg/OneRuler` repo.
     # Learn more about OneRuler here: https://arxiv.org/abs/2503.01996
     url = "https://raw.githubusercontent.com/mungg/OneRuler/refs/heads/main/OneRuler/data/books/pt/the_book_of_disquietude_pt.txt"
-
     async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
         text = await fetch_url(client, url)
 
