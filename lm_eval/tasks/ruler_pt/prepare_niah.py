@@ -370,8 +370,7 @@ def get_haystack(
     
     NEEDLE = "{article} {type_needle_v} especial para {key} é: {value}."
     if type_haystack == "essay":
-        #HAYSTACK_URL = "https://raw.githubusercontent.com/mungg/OneRuler/refs/heads/main/OneRuler/data/books/pt/the_book_of_disquietude_pt.txt"
-        HAYSTACK_URL = "https://raw.githubusercontent.com/Nkluge-correa/long-pt-docs/refs/heads/main/docs/000021.txt"
+        HAYSTACK_URL = "https://raw.githubusercontent.com/mungg/OneRuler/refs/heads/main/OneRuler/data/books/pt/the_book_of_disquietude_pt.txt"
 
         response = requests.get(HAYSTACK_URL)
         response.raise_for_status()
