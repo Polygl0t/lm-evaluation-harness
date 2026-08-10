@@ -1,0 +1,3 @@
+include: hellaswag_poly_pt.yaml
+task: hellaswag_poly_gu
+dataset_name: gu
