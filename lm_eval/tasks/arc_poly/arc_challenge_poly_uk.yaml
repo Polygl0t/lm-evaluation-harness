@@ -1,0 +1,3 @@
+include: arc_challenge_poly_pt.yaml
+task: arc_challenge_poly_uk
+dataset_name: uk

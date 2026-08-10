@@ -1,0 +1,24 @@
+task: iitp_mr_hi
+dataset_path: ai4bharat/indic_glue
+dataset_name: iitp-mr.hi
+output_type: multiple_choice
+training_split: train
+validation_split: validation
+test_split: test
+
+doc_to_text: "वाक्य: \"{{text}}\"\nकृपया दिए गए वाक्य की भावनात्मक श्रेणी बताइए।\nयदि वाक्य नकारात्मक है, तो केवल 'A' उत्तर दें।\nयदि वाक्य तटस्थ है, तो केवल 'B' उत्तर दें।\nयदि वाक्य सकारात्मक है, तो केवल 'C' उत्तर दें।\nसही उत्तर:"
+doc_to_choice: ["A", "B", "C"]
+doc_to_target: "{{label}}" 
+should_decontaminate: true
+doc_to_decontamination_query: "{{text}}"
+
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+
+metadata:
+  version: 1.0
