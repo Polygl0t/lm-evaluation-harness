@@ -1,0 +1,3 @@
+include: lambada_poly_pt.yaml
+task: lambada_openai_poly_fr
+dataset_name: fr
