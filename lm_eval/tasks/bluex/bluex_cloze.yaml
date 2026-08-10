@@ -1,0 +1,24 @@
+task: bluex_cloze
+dataset_path: nicholasKluge/BLUEX_without_images # filter of portuguese-benchmark-datasets/BLUEX
+test_split: train
+process_docs: !function utils.process_test_docs
+fewshot_split: train
+fewshot_config:
+  sampler: first_n
+  process_docs: !function utils.process_fewshot_docs
+num_fewshot: 3
+description: "As perguntas a seguir são questões de múltipla escolha de provas\
+  \ de vestibular de universidades brasileiras, selecione a única alternativa\
+  \ correta e responda apenas com a letra correspondente.\n\n"
+output_type: multiple_choice
+doc_to_text: !function utils.doc_to_text
+doc_to_target: answerKey
+doc_to_choice: !function utils.doc_to_choice
+should_decontaminate: true
+doc_to_decontamination_query: !function utils.doc_to_text
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

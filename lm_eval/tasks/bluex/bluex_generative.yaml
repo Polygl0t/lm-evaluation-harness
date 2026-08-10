@@ -1,0 +1,49 @@
+task: bluex_generative
+dataset_path: nicholasKluge/BLUEX_without_images # filter of portuguese-benchmark-datasets/BLUEX
+test_split: train
+process_docs: !function utils.process_test_docs
+fewshot_split: train
+fewshot_config:
+  sampler: first_n
+  process_docs: !function utils.process_fewshot_docs
+num_fewshot: 3
+description: "As perguntas a seguir são questões de múltipla escolha de provas\
+  \ de vestibular de universidades brasileiras, selecione a única alternativa\
+  \ correta e responda apenas com a letra correspondente.\n\n"
+output_type: generate_until
+# Same prompt as the `bluex` (multiple_choice) task: it already ends in "Resposta
+# correta:", so the model's continuation should start with the answer letter.
+doc_to_text: !function utils.doc_to_text
+doc_to_target: answerKey
+should_decontaminate: true
+doc_to_decontamination_query: !function utils.doc_to_text
+generation_kwargs:
+  until:
+    - "Pergunta:"
+    - "\n\n"
+  do_sample: false
+  temperature: 0.0
+  max_gen_toks: 256
+filter_list:
+  - name: strict-match
+    filter:
+      # Answer letter expected right at the start of the continuation.
+      - function: regex
+        regex_pattern: '^\s*\(?([A-E])\)?'
+      - function: take_first
+  - name: flexible-extract
+    filter:
+      # Fallback: scan the whole completion and take the last A-E letter seen,
+      # in case the model reasons first and states the letter at the end.
+      - function: regex
+        regex_pattern: '\(?([A-E])\)?'
+        group_select: -1
+      - function: take_first
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: true
+metadata:
+  version: 1.0

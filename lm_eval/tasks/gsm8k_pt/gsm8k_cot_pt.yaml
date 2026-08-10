@@ -1,0 +1,99 @@
+dataset_name: default
+dataset_path: Polygl0t/gsm8k-pt
+doc_to_target: "{{answer.split('####')[-1].strip() if answer is defined else target}}"
+doc_to_text: "P: {{question}}
+
+  R:"
+fewshot_config:
+  sampler: first_n
+  samples:
+    - question:
+        Há 15 árvores no bosque. Os trabalhadores do bosque plantarão árvores no
+        bosque hoje. Depois que terminarem, haverá 21 árvores. Quantas árvores os
+        trabalhadores do bosque plantaram hoje?
+      target:
+        Há 15 árvores originalmente. Então havia 21 árvores depois que mais algumas
+        foram plantadas. Então deve ter havido 21 - 15 = 6. A resposta é 6.
+    - question: Se há 3 carros no estacionamento e mais 2 carros chegam, quantos
+        carros há no estacionamento?
+      target:
+        Há originalmente 3 carros. Mais 2 carros chegam. 3 + 2 = 5. A resposta
+        é 5.
+    - question:
+        Leah tinha 32 chocolates e sua irmã tinha 42. Se elas comeram 35, quantos
+        pedaços elas têm sobrando no total?
+      target:
+        Originalmente, Leah tinha 32 chocolates. Sua irmã tinha 42. Então no total elas
+        tinham 32 + 42 = 74. Depois de comer 35, elas tinham 74 - 35 = 39. A resposta é 39.
+    - question:
+        Jason tinha 20 pirulitos. Ele deu alguns pirulitos para Denny. Agora Jason tem 12
+        pirulitos. Quantos pirulitos Jason deu para Denny?
+      target:
+        Jason começou com 20 pirulitos. Então ele tinha 12 depois de dar alguns para Denny.
+        Então ele deu para Denny 20 - 12 = 8. A resposta é 8.
+    - question:
+        Shawn tem cinco brinquedos. No Natal, ele ganhou dois brinquedos de sua mãe e
+        dois de seu pai. Quantos brinquedos ele tem agora?
+      target:
+        Shawn começou com 5 brinquedos. Se ele ganhou 2 brinquedos de sua mãe e de seu pai,
+        então são mais 4 brinquedos. 5 + 4 = 9. A resposta é 9.
+    - question:
+        Havia nove computadores na sala de servidores. Cinco computadores a mais foram
+        instalados a cada dia, de segunda a quinta-feira. Quantos computadores há agora na
+        sala de servidores?
+      target:
+        Havia originalmente 9 computadores. Por cada um dos 4 dias, 5 computadores a mais
+        foram adicionados. Então 5 * 4 = 20 computadores foram adicionados. 9 + 20 é 29. A resposta é
+        29.
+    - question:
+        Michael tinha 58 bolas de golfe. Na terça-feira, ele perdeu 23 bolas de golfe. Na quarta-feira,
+        ele perdeu mais 2. Quantas bolas de golfe ele tinha no final da quarta-feira?
+      target:
+        Michael começou com 58 bolas de golfe. Depois de perder 23 na terça-feira, ele tinha
+        58 - 23 = 35. Depois de perder mais 2, ele tinha 35 - 2 = 33 bolas de golfe. A resposta
+        é 33.
+    - question:
+        Olivia tem $23. Ela comprou cinco bagels por $3 cada. Quanto dinheiro ela
+        tem sobrando?
+      target:
+        Olivia tinha 23 dólares. 5 bagels por 3 dólares cada serão 5 x 3 = 15
+        dólares. Então ela tem 23 - 15 dólares sobrando. 23 - 15 é 8. A resposta é 8.
+filter_list:
+  - filter:
+      - function: regex
+        regex_pattern: A resposta é (\-?[0-9\.\,]+).
+      - function: take_first
+    name: strict-match
+  - filter:
+      - function: regex
+        group_select: -1
+        regex_pattern: (-?[$0-9.,]{2,})|(-?[0-9]+)
+      - function: take_first
+    name: flexible-extract
+generation_kwargs:
+  do_sample: false
+  until:
+    - "P:"
+    - </s>
+    - <|im_end|>
+tag:
+  - chain_of_thought_pt
+  - polyglot_harness
+metadata:
+  version: 1.0
+metric_list:
+  - aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: false
+    metric: exact_match
+    regexes_to_ignore:
+      - ","
+      - \$
+      - "(?s).*#### "
+      - \.$
+num_fewshot: 8
+output_type: generate_until
+repeats: 1
+task: gsm8k_cot_pt
+test_split: test
