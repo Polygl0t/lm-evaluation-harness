@@ -1,0 +1,3 @@
+include: hellaswag_poly_pt.yaml
+task: hellaswag_poly_id
+dataset_name: id
