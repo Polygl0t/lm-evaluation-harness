@@ -6,8 +6,9 @@ Title: IndicXNLI: Evaluating Multilingual Inference for Indian Languages
 
 Abstract: https://aclanthology.org/2022.emnlp-main.755/
 
-IndicXNLI is similar to existing XNLI dataset in shape/form, but focusses on Indic language family. IndicXNLI include NLI data for eleven major Indic languages but here we have implemented only Hindi translation of the original English XNLI dataset.
+IndicXNLI is similar to existing XNLI dataset in shape/form, but focusses on Indic language family. IndicXNLI include NLI data for eleven major Indic languages. This repository currently implements the Hindi and Gujarati translations of the original English XNLI dataset.
 
+Homepage: https://huggingface.co/datasets/Divyanshu/indicxnli
 
 ### Citation
 ```latex
@@ -29,8 +30,8 @@ IndicXNLI is similar to existing XNLI dataset in shape/form, but focusses on Ind
 
 #### Tasks
 
-* IndicXNLI: Hindi translation of the original English XNLI dataset
-
+* `indicxnli`: Hindi translation of the original English XNLI dataset
+* `indicxnli_gu`: Gujarati natural language inference (entailment/neutral/contradiction), scored via loglikelihood over the three label continuations, following the same format as the existing `xnli` task family. This is not part of the existing xnli group, since that group is built on `facebook/xnli`, which does not include Gujarati. This task instead uses `Divyanshu/indicxnli`, the dataset from the IndicXNLI paper, mirroring the xnli task structure for consistency.
 
 ### Checklist
 
