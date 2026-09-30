@@ -1,0 +1,52 @@
+task: gsm8kx_de
+tag:
+  - opengptx
+dataset_path: LumiOpen/opengpt-x_gsm8kx
+dataset_name: DE
+output_type: generate_until
+training_split: train
+validation_split: null
+test_split: test
+fewshot_split: train
+# doc_to_target is the full translated rationale (ends in "#### <number>"), so the
+# few-shot examples demonstrate reasoning. Prompt/metric/filters mirror upstream gsm8k.
+doc_to_text: "Frage: {{question}}\nAntwort:"
+doc_to_target: "{{answer}}"
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    # Must stay false: stripping punctuation would let "2.5" match "25".
+    ignore_punctuation: false
+    regexes_to_ignore:
+      # Gold answers keep English thousands separators ("114,200").
+      - ","
+      - "\\$"
+      - "(?s).*#### "
+      - "\\.$"
+generation_kwargs:
+  until:
+    - "Frage:"
+    - "</s>"
+    - "<|im_end|>"
+  do_sample: false
+  temperature: 0.0
+  # German rationales reach ~410 tokens; the 256 default truncates before "#### <n>".
+  max_gen_toks: 512
+repeats: 1
+num_fewshot: 5
+filter_list:
+  - name: "strict-match"
+    filter:
+      - function: "regex"
+        regex_pattern: "#### (\\-?[0-9\\.\\,]+)"
+      - function: "take_first"
+  - name: "flexible-extract"
+    filter:
+      - function: "regex"
+        group_select: -1
+        regex_pattern: "(-?[$0-9.,]{2,})|(-?[0-9]+)"
+      - function: "take_first"
+metadata:
+  version: 1.0

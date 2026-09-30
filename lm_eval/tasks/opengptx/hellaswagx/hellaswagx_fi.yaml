@@ -1,0 +1,3 @@
+include: hellaswagx_de.yaml
+task: hellaswagx_fi
+dataset_name: FI

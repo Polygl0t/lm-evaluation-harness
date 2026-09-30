@@ -1,0 +1,3 @@
+include: winogrande_multilingual_de.yaml
+task: winogrande_multilingual_fra
+dataset_name: fra

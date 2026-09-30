@@ -1,0 +1,3 @@
+include: humaneval_multilingual_de.yaml
+task: humaneval_multilingual_fra
+dataset_name: fra

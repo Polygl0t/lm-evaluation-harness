@@ -1,0 +1,3 @@
+include: _template.yaml
+task: mmlux_de_marketing
+dataset_name: marketing_DE

@@ -1,0 +1,22 @@
+task: hellaswag_leolm_de
+tag:
+  - leolm
+dataset_path: LeoLM/HellaSwag_de
+output_type: multiple_choice
+# Uses German columns: activity_label_de, ctx_de, endings_de; label is str
+process_docs: !function utils.process_docs_hellaswag_leolm
+training_split: train
+validation_split: validation
+test_split: null
+doc_to_text: "{{query}}"
+doc_to_target: "{{gold}}"
+doc_to_choice: "{{choices}}"
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

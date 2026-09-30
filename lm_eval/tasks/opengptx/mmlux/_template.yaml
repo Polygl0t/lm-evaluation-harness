@@ -1,0 +1,22 @@
+tag:
+  - opengptx
+  - german_comparison_mmlu
+# Script-free mirror; Eurolingua/mmlux ships a loading script datasets>=3 cannot run.
+dataset_path: LumiOpen/opengpt-x_mmlux
+output_type: multiple_choice
+training_split: dev
+validation_split: validation
+test_split: test
+# answer is int 0-3; choices is a plain list of strings
+doc_to_text: "Frage: {{question}}\nAntwort:"
+doc_to_target: "{{answer}}"
+doc_to_choice: "{{choices}}"
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

@@ -1,0 +1,24 @@
+task: arc_challenge_de
+tag:
+  - leolm
+dataset_path: LeoLM/ArcChallenge_de
+output_type: multiple_choice
+training_split: null
+validation_split: validation
+test_split: test
+# choices_de is also a dict with {label: [A,B,C,D], text: [...]}
+process_docs: !function utils.process_docs_arc_leolm
+doc_to_text: "Frage: {{question_de}}\nAntwort:"
+doc_to_target: "{{choices_de.label.index(answerKey)}}"
+doc_to_choice: "{{choices_de.text}}"
+should_decontaminate: true
+doc_to_decontamination_query: "Frage: {{question_de}}\nAntwort:"
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

@@ -1,0 +1,24 @@
+task: truthfulqa_leolm_de_mc1
+tag:
+  - leolm
+dataset_path: LeoLM/TruthfulQA_de
+output_type: multiple_choice
+training_split: null
+validation_split: validation
+test_split: null
+# The 6-shot German QA primer is part of doc_to_text (see utils); dataset is
+# validation-only, so num_fewshot stays 0.
+num_fewshot: 0
+# mc1_targets_de = {choices: [...], labels: [1,0,0,...]}; correct answer at labels.index(1)
+process_docs: !function utils.process_docs_truthfulqa_leolm
+doc_to_text: "{{query}}"
+doc_to_target: "{{gold}}"
+doc_to_choice: "{{mc1_choices}}"
+should_decontaminate: true
+doc_to_decontamination_query: question_de
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

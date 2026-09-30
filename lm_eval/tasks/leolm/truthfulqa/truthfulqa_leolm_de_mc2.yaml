@@ -1,0 +1,9 @@
+include: truthfulqa_leolm_de_mc1.yaml
+task: truthfulqa_leolm_de_mc2
+# Several answers can be true; score is the probability mass on all of them, computed
+# in process_results, so doc_to_target is unused (0, as upstream).
+doc_to_target: 0
+doc_to_choice: "{{mc2_choices}}"
+process_results: !function utils.process_results_mc2_leolm
+metadata:
+  version: 1.0

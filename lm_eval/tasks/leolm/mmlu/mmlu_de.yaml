@@ -1,0 +1,22 @@
+task: mmlu_de
+tag:
+  - leolm
+dataset_path: LeoLM/mmlu_de
+output_type: multiple_choice
+# Row count is environment-dependent and there is no separate few-shot split; see README.
+training_split: null
+validation_split: validation
+test_split: null
+# answer is a ClassLabel int (0-3); choices_de is a plain list of strings
+doc_to_text: "Frage: {{question_de}}\nAntwort:"
+doc_to_target: "{{answer}}"
+doc_to_choice: "{{choices_de}}"
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

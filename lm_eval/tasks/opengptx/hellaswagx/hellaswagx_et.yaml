@@ -1,0 +1,3 @@
+include: hellaswagx_de.yaml
+task: hellaswagx_et
+dataset_name: ET
