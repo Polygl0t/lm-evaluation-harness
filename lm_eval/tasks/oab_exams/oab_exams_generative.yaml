@@ -20,7 +20,7 @@ doc_to_decontamination_query: !function util.doc_to_text
 generation_kwargs:
   until:
     - "Questão:"
-    - "\n\n"
+    - "<|im_end|>"
   do_sample: false
   temperature: 0.0
   max_gen_toks: 256
