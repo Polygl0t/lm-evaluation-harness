@@ -27,16 +27,13 @@ generation_kwargs:
 filter_list:
   - name: strict-match
     filter:
-      # Answer letter expected right at the start of the continuation.
       - function: regex
-        regex_pattern: '^\s*\(?([A-E])\)?'
+        regex_pattern: '^\s*[\*"(\[]*\(?([A-E])\)?[\*"\]]*[ \t]*(?=[.:;,\-)\n]|$)'
       - function: take_first
   - name: flexible-extract
     filter:
-      # Fallback: scan the whole completion and take the last A-E letter seen,
-      # in case the model reasons first and states the letter at the end.
       - function: regex
-        regex_pattern: '\(?([A-E])\)?'
+        regex_pattern: '(?i)(?:letra|alternativa|op[çc][ãa]o|resposta(?:\s+correta)?)\s*(?:[ée]|:|=)?\s*[\*"(\[]*\(?([A-E])\)?(?!\w)'
         group_select: -1
       - function: take_first
 metric_list:
